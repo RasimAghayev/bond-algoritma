@@ -15,18 +15,8 @@ class BondController extends Controller
      */
     public function index()
     {
-        $comments = Bond::all();
-        return response()->json($comments);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $bonds = Bond::all();
+        return response()->json($bonds);
     }
 
     /**
@@ -38,18 +28,26 @@ class BondController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:255',
-            'text' => 'required'
+            'emisia_date' => 'required|max:255',
+            'turnover_date' => 'required|max:255',
+            'nominal_price' => 'required|max:255',
+            'frequency_payment_coupons' => 'required|max:255',
+            'period_for_calculating_interest' => 'required',
+            'coupon_interest' => 'required|max:255',
           ]);
       
-          $newComment = new Comment([
-            'name' => $request->get('name'),
-            'text' => $request->get('text')
+          $newBond = new Bond([
+            'emisia_date' => $request->get('emisia_date'), //Y-m-d
+            'turnover_date' => $request->get('turnover_date'),//Y-m-d
+            'nominal_price' => $request->get('nominal_price'),//digit
+            'frequency_payment_coupons' => $request->get('frequency_payment_coupons'),//1, 2, 4, 12
+            'period_for_calculating_interest' =>$request->get('period_for_calculating_interest'),//360, 364, 365
+            'coupon_interest' => $request->get('coupon_interest'),//0-100
           ]);
       
-          $newComment->save();
+          $newBond->save();
       
-          return response()->json($newComment);
+          return response()->json($newBond);
     }
 
     /**
@@ -60,18 +58,8 @@ class BondController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $bond = Bond::findOrFail($id);
+        return response()->json($bond);
     }
 
     /**
@@ -83,7 +71,26 @@ class BondController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $bond = Bond::findOrFail($id);
+        $request->validate([
+            'emisia_date' => 'required|max:255',
+            'turnover_date' => 'required|max:255',
+            'nominal_price' => 'required|max:255',
+            'frequency_payment_coupons' => 'required|max:255',
+            'period_for_calculating_interest' => 'required',
+            'coupon_interest' => 'required|max:255',
+          ]);
+    
+            $bond->emisia_date = $request->get('emisia_date'); 
+            $bond->turnover_date = $request->get('turnover_date');
+            $bond->nominal_price = $request->get('nominal_price');
+            $bond->frequency_payment_coupons = $request->get('frequency_payment_coupons');
+            $bond->period_for_calculating_interest =$request->get('period_for_calculating_interest');
+            $bond->coupon_interest = $request->get('coupon_interest');
+      
+          $bond->save();
+      
+          return response()->json($bond);
     }
 
     /**
@@ -94,6 +101,9 @@ class BondController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $bond = Bond::findOrFail($id);
+        $bond->delete();
+
+        return response()->json($bond::all());
     }
 }
