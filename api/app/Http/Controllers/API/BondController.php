@@ -115,4 +115,23 @@ class BondController extends Controller
 //        return response()->json($bond::all());
         return response(['bound' => $id, 'message' => 'Bond deleted successfully']);
     }
+
+    /**
+     * payouts list.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function payouts($id){
+        $bond = Bond::findOrFail($id);
+
+        $period_for_calculating_interest= $bond->period_for_calculating_interest;
+        $frequency_payment_coupons= $bond->frequency_payment_coupons;
+        $day = match ($period_for_calculating_interest) {
+            '364' => 364 / $frequency_payment_coupons,
+            '360' => 12 / ($frequency_payment_coupons * 30),
+            '365' => 12 / $frequency_payment_coupons,
+        };
+        return response(['dates' => new BondResource($bond)]);
+    }
 }
