@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+//use App\Enums\FrequencyPaymentCoupons;
+//use Illuminate\Validation\Rules\Enum;
 use Illuminate\Http\Request;
 use App\Models\Bond;
+use App\Http\Resources\BondResource;
 
 class BondController extends Controller
 {
@@ -16,7 +19,7 @@ class BondController extends Controller
     public function index()
     {
         $bonds = Bond::all();
-        return response()->json($bonds);
+        return response(['bonds' => BondResource::collection($bonds)]);
     }
 
     /**
@@ -30,12 +33,14 @@ class BondController extends Controller
         $request->validate([
             'emisia_date' => 'required|date_format:Y-m-d',
             'turnover_date' => 'required|date_format:Y-m-d',
-            'nominal_price' => 'required|max:255',
-            'frequency_payment_coupons' => 'required|max:255',
-            'period_for_calculating_interest' => 'required',
-            'coupon_interest' => 'required|max:255',
+            'nominal_price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+//            'frequency_payment_coupons' => [new Enum(FrequencyPaymentCoupons::class)],
+            'frequency_payment_coupons' => 'required|in:1, 2, 4, 12',
+//            'period_for_calculating_interest' => [new Enum(PeriodForCalculatingInterest::class)],
+            'period_for_calculating_interest' => 'required|in:360, 364, 365',
+            'coupon_interest' => 'required|integer|between:0,100',
           ]);
-      
+
           $newBond = new Bond([
             'emisia_date' => $request->get('emisia_date'), //Y-m-d
             'turnover_date' => $request->get('turnover_date'),//Y-m-d
@@ -44,10 +49,10 @@ class BondController extends Controller
             'period_for_calculating_interest' =>$request->get('period_for_calculating_interest'),//360, 364, 365
             'coupon_interest' => $request->get('coupon_interest'),//0-100
           ]);
-      
+
           $newBond->save();
-      
-          return response()->json($newBond);
+          return response(['bound' => new BondResource($newBond), 'message' => 'Bond created successfully']);
+//          return response()->json($newBond);
     }
 
     /**
@@ -59,7 +64,8 @@ class BondController extends Controller
     public function show($id)
     {
         $bond = Bond::findOrFail($id);
-        return response()->json($bond);
+        return response(['bound' => new BondResource($bond)]);
+//        return response()->json($bond);
     }
 
     /**
@@ -73,24 +79,27 @@ class BondController extends Controller
     {
         $bond = Bond::findOrFail($id);
         $request->validate([
-            'emisia_date' => 'required|max:255',
-            'turnover_date' => 'required|max:255',
-            'nominal_price' => 'required|max:255',
-            'frequency_payment_coupons' => 'required|max:255',
-            'period_for_calculating_interest' => 'required',
-            'coupon_interest' => 'required|max:255',
+            'emisia_date' => 'required|date_format:Y-m-d',
+            'turnover_date' => 'required|date_format:Y-m-d',
+            'nominal_price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+//            'frequency_payment_coupons' => [new Enum(FrequencyPaymentCoupons::class)],
+            'frequency_payment_coupons' => 'required|in:1, 2, 4, 12',
+//            'period_for_calculating_interest' => [new Enum(PeriodForCalculatingInterest::class)],
+            'period_for_calculating_interest' => 'required|in:360, 364, 365',
+            'coupon_interest' => 'required|integer|between:0,100',
           ]);
-    
-            $bond->emisia_date = $request->get('emisia_date'); 
+
+            $bond->emisia_date = $request->get('emisia_date');
             $bond->turnover_date = $request->get('turnover_date');
             $bond->nominal_price = $request->get('nominal_price');
             $bond->frequency_payment_coupons = $request->get('frequency_payment_coupons');
             $bond->period_for_calculating_interest =$request->get('period_for_calculating_interest');
             $bond->coupon_interest = $request->get('coupon_interest');
-      
+
           $bond->save();
-      
-          return response()->json($bond);
+
+//          return response()->json($bond);
+        return response(['bound' => new BondResource($bond), 'message' => 'Bond updated successfully']);
     }
 
     /**
@@ -103,7 +112,7 @@ class BondController extends Controller
     {
         $bond = Bond::findOrFail($id);
         $bond->delete();
-
-        return response()->json($bond::all());
+//        return response()->json($bond::all());
+        return response(['bound' => $id, 'message' => 'Bond deleted successfully']);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PurchaseOrderResource;
 use Illuminate\Http\Request;
 use App\Models\PurchaseOrder;
 
@@ -15,17 +16,9 @@ class PurchaseOrderController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $purchaseOrder = PurchaseOrder::all();
+//        return response()->json($purchaseOrder);
+        return response(['purchaseorderresources' => PurchaseOrderResource::collection($purchaseOrder)]);
     }
 
     /**
@@ -36,7 +29,22 @@ class PurchaseOrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'order_date' => 'required|date_format:Y-m-d',
+            'number_bonds_received' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+        ]);
+
+        $newPurchaseOrder = new PurchaseOrder([
+            'order_date' => $request->get('order_date'), //Y-m-d
+            'number_bonds_received' => $request->get('number_bonds_received'),//digit
+        ]);
+
+        $newPurchaseOrder->save();
+
+//        return response()->json($newPurchaseOrder);
+          return response(['purchaseorderresource' => new PurchaseOrderResource($newPurchaseOrder),
+              'message' => 'PurchaseOrder created successfully']);
     }
 
     /**
@@ -47,18 +55,9 @@ class PurchaseOrderController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $purchaseOrder = PurchaseOrder::findOrFail($id);
+//        return response()->json($purchaseOrder);
+        return response(['purchaseorderresource' => PurchaseOrderResource::collection($purchaseOrder)]);
     }
 
     /**
@@ -70,7 +69,21 @@ class PurchaseOrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $purchaseOrder = PurchaseOrder::findOrFail($id);
+        $request->validate([
+            'order_date' => 'required|date_format:Y-m-d',
+            'number_bonds_received' => 'required|regex:/^\d+(\.\d{1,2})?$/',
+        ]);
+
+        $purchaseOrder->order_date = $request->get('order_date');
+        $purchaseOrder->number_bonds_received = $request->get('number_bonds_received');
+
+        $purchaseOrder->save();
+
+//        return response()->json($purchaseOrder);
+        return response(['purchaseorderresource' => new PurchaseOrderResource($purchaseOrder),
+            'message' => 'PurchaseOrder updated successfully']);
     }
 
     /**
@@ -81,6 +94,9 @@ class PurchaseOrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $bond = PurchaseOrder::findOrFail($id);
+        $bond->delete();
+//        return response()->json($bond::all());
+        return response(['purchaseorderresource' => $id, 'message' => 'PurchaseOrder deleted successfully']);
     }
 }

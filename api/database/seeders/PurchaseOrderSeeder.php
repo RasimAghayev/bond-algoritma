@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PurchaseOrder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -14,6 +15,9 @@ class PurchaseOrderSeeder extends Seeder
      */
     public function run()
     {
-        
+
+        PurchaseOrder::factory()
+            ->times(3)
+            ->create();
     }
 }

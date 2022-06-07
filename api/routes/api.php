@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Resources\PurchaseOrderResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\BondController;
+use App\Http\Controllers\API\PurchaseOrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +22,4 @@ use App\Http\Controllers\API\BondController;
 // });
 
 Route::apiResource('bonds', BondController::class);
+Route::apiResource('purchaseprders', PurchaseOrderController::class);

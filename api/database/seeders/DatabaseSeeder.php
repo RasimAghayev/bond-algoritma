@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Bond;
-use App\Models\PurchaseOrder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,11 +20,9 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        Bond::factory()
-        ->times(3)
-        ->create();
-        PurchaseOrder::factory()
-        ->times(3)
-        ->create();
+        $this->call([
+            BondSeeder::class,
+            PurchaseOrderSeeder::class
+        ]);
     }
 }

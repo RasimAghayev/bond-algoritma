@@ -21,7 +21,7 @@ class BondFactory extends Factory
         return [
             'emisia_date' => $this->faker->date('Y-m-d'), //Y-m-d
             'turnover_date' => $this->faker->date('Y-m-d'),//Y-m-d
-            'nominal_price' => $this->faker->randomFloat(2),//digit
+            'nominal_price' => $this->faker->randomFloat(1),//digit
             'frequency_payment_coupons' => $this->faker->randomElement(['1', '2', '4', '12']),//1, 2, 4, 12
             'period_for_calculating_interest' =>$this->faker->randomElement(['360', '364', '365']),//360, 364, 365
             'coupon_interest' => $this->faker->numberBetween(0, 100),//0-100

@@ -24,3 +24,11 @@ php artisan tinker -> App\Models\Bond::all() | App\Models\PurchaseOrder::all()
 
 php artisan make:controller API/BondController --resource
 php artisan make:controller API/PurchaseOrderController --resource
+
+
+php artisan make:resource BondResource
+php artisan make:resource PurchaseOrderResource
+
+
+php artisan make:test BondTest
+php artisan make:test PurchaseOrderTest
