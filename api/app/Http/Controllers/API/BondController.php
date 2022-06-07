@@ -28,8 +28,8 @@ class BondController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'emisia_date' => 'required|max:255',
-            'turnover_date' => 'required|max:255',
+            'emisia_date' => 'required|date_format:Y-m-d',
+            'turnover_date' => 'required|date_format:Y-m-d',
             'nominal_price' => 'required|max:255',
             'frequency_payment_coupons' => 'required|max:255',
             'period_for_calculating_interest' => 'required',
