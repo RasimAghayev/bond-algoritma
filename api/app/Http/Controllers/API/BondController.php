@@ -165,7 +165,7 @@ class BondController extends Controller
         $totalMonths = $yearsInMonths + $months;
         $countPeriod=($month_or_day=='day')?$totalDays:$totalMonths;
 //        $interest_accrual_period=$interest_accrual_period_day??$interest_accrual_period_month;
-        for ($i = $interest_accrual_period; $i <= $countPeriod+$interest_accrual_period; $i++) {
+        for ($i = $interest_accrual_period; $i <= $countPeriod; $i++) {
             $percent_paid_date1=date("Y-m-d", strtotime($emisia_date . "+".$i." ".$month_or_day));
             $intervalDate = new DateTime($percent_paid_date1);
             $week_num = (int) $intervalDate->format("w");

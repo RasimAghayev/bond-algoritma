@@ -25,4 +25,4 @@ Route::apiResource('bonds', BondController::class);
 Route::apiResource('purchaseprders', PurchaseOrderController::class);
 
 Route::get('bond/{id}/payouts', [BondController::class,'payouts']);
-Route::get('bond/order/{id}', [PurchaseOrderController::class,'store']);
+Route::post('bond/{id}/order', [PurchaseOrderController::class,'store']);

@@ -28,15 +28,25 @@ class PurchaseOrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$id)
     {
 
         $request->validate([
             'order_date' => 'required|date_format:Y-m-d',
             'number_bonds_received' => 'required|regex:/^\d+(\.\d{1,2})?$/',
         ]);
-
+        $order_date=$request->get('order_date');
+        $bond = Bond::findOrFail($id);
+        $emisia_date= $bond->emisia_date;
+        $turnover_date= $bond->turnover_date;
+        if($order_date<$emisia_date){
+            return response(['bond'=>$bond,'error' => 'Alış tarixi “Emissiya tarixi”-dən az ola bilməz.']);
+        }
+        if($turnover_date<$order_date){
+            return response(['bond'=>$bond,'error' => 'Alış tarix “Son tədavül tarixi”-dən cox ola bilməz.']);
+        }
         $newPurchaseOrder = new PurchaseOrder([
+            'bonds_id'=>$bond->id,
             'order_date' => $request->get('order_date'), //Y-m-d
             'number_bonds_received' => $request->get('number_bonds_received'),//digit
         ]);
@@ -44,7 +54,7 @@ class PurchaseOrderController extends Controller
         $newPurchaseOrder->save();
 
 //        return response()->json($newPurchaseOrder);
-          return response(['purchaseorderresource' => new PurchaseOrderResource($newPurchaseOrder),
+          return response(['purchaseorder' => new PurchaseOrderResource($newPurchaseOrder),
               'message' => 'PurchaseOrder created successfully']);
     }
 
