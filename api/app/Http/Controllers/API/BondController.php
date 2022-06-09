@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bond;
 use App\Http\Resources\BondResource;
+use Carbon\Carbon;
+use DateTime;
 
 class BondController extends Controller
 {
@@ -124,14 +126,42 @@ class BondController extends Controller
      */
     public function payouts($id){
         $bond = Bond::findOrFail($id);
-
-        $period_for_calculating_interest= $bond->period_for_calculating_interest;
-        $frequency_payment_coupons= $bond->frequency_payment_coupons;
-        $day = match ($period_for_calculating_interest) {
-            '364' => 364 / $frequency_payment_coupons,
-            '360' => 12 / ($frequency_payment_coupons * 30),
-            '365' => 12 / $frequency_payment_coupons,
-        };
-        return response(['dates' => new BondResource($bond)]);
+        $emisia_date= $bond->emisia_date;//  'emisia_date' Emissiya tarixi,
+        $turnover_date= $bond->turnover_date;//  'turnover_date' Son tədavül tarix,
+        $nominal_price= (double) $bond->nominal_price;//  'nominal_price' Nominal Qiymət,
+        $period_for_calculating_interest=  (int) $bond->period_for_calculating_interest;//'period_for_calculating_interest' Kuponların ödənilmə tezliyi 1, 2, 4, 12
+        $frequency_payment_coupons= (int) $bond->frequency_payment_coupons;// frequency_payment_coupons  Faizlərin hesablanma periodu 360, 364, 365,
+        $coupon_interest= (int) $bond->coupon_interest; //  'coupon_interest' Kupon faizi,
+        // $interest_accrual_period = match ($period_for_calculating_interest) {
+        //     '364' => 364 / $frequency_payment_coupons,
+        //     '360' => (12 / $frequency_payment_coupons) * 30,
+        //     '365' => 12 / $frequency_payment_coupons,
+        // };
+        switch ($period_for_calculating_interest) {
+            case 360:
+              $interest_accrual_period_day = (12 / $frequency_payment_coupons) * 30;
+              break;
+            case 364:
+              $interest_accrual_period_day = 364/ $frequency_payment_coupons;
+              break;
+            case 365:
+              $interest_accrual_period_month = 12 / $frequency_payment_coupons;
+              break;
+        }
+        // $emisia_date_year =Carbon::createFromFormat('Y-m-d', $emisia_date)->year;
+        // $turnover_date_year = Carbon::createFromFormat('Y-m-d', $turnover_date)->year;
+        // $year_period=($turnover_date_year-$emisia_date_year+1)*$period_for_calculating_interest;
+        
+        $emisia_date1 = new DateTime($emisia_date);
+        $turnover_date1 = new DateTime($turnover_date);
+        $interval = $emisia_date1->diff($turnover_date1);
+        $days = $interval->format('%a');
+        $interest_accrual_period=$interest_accrual_period_day??$interest_accrual_period_month;
+        for ($i = 1; $i <= $days; $i++) {
+          $date[]=['period_for_calculating_interest'=>$days,'date'=>date("Y-m-d", strtotime($emisia_date . "+".$i*$interest_accrual_period." day"))];
+        } 
+        return response(['bond'=>new BondResource($bond),'dates' => $date]);
+        // return response(['dates' =>$date]);
     }
+
 }
