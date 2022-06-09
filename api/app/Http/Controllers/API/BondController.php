@@ -5,11 +5,13 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 //use App\Enums\FrequencyPaymentCoupons;
 //use Illuminate\Validation\Rules\Enum;
+use App\Models\PurchaseOrder;
 use Illuminate\Http\Request;
 use App\Models\Bond;
 use App\Http\Resources\BondResource;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Facades\DB;
 
 class BondController extends Controller
 {
@@ -121,10 +123,10 @@ class BondController extends Controller
     /**
      * payouts list.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function payouts($id){
+    public function payouts(int $id, $arr=false){
         $bond = Bond::findOrFail($id);
         $date=[];
         $emisia_date= $bond->emisia_date;//  'emisia_date' Emissiya tarixi,
@@ -176,7 +178,30 @@ class BondController extends Controller
             $i=$i+$interest_accrual_period;
         }
 //        return response(['bond'=>new BondResource($bond),'dates' => $date]);
-         return response(['dates' =>$date]);
+         return ($arr)?$date:response(['dates' =>$date]);
     }
 
+    /**
+     * order list.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function order(int $id){
+        $bond=DB::table('bonds as b')
+            ->leftJoin('purchase_orders as po', 'b.id', '=', 'po.bond_id')
+            ->select('*')
+            ->where('b.id', $id)
+            ->get();
+//        $nominal_price= (double) $bond->nominal_price;//  'nominal_price' Nominal Qiymət,
+//        $period_for_calculating_interest=  (int) $bond->period_for_calculating_interest;//'period_for_calculating_interest' Kuponların ödənilmə tezliyi 1, 2, 4, 12
+//        $frequency_payment_coupons= (int) $bond->frequency_payment_coupons;// frequency_payment_coupons  Faizlərin hesablanma periodu 360, 364, 365,
+//        $coupon_interest= (int) $bond->coupon_interest; //  'coupon_interest' Kupon faizi,
+//        $purchase_order_date= $bond->purchaseOrders->order_date; //  'coupon_interest' Kupon faizi,
+//        $purchase_order_number_bonds_received= (int) $bond->purchaseOrders->number_bonds_received; //  'coupon_interest' Kupon faizi,
+        $dateList=$this->payouts($id,true);
+        $number_of_past_days=1;
+//        $accumulatedInterest=($nominal_price/100*$coupon_interest)/($frequency_payment_coupons*$number_of_past_days);
+        return response(['bond'=>$bond,'payouts' =>$dateList]);
+    }
 }

@@ -9,7 +9,7 @@ class PurchaseOrder extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'bonds_id',
+        'bond_id',
         'order_date', //Y-m-d
         'number_bonds_received',//digit
       ];

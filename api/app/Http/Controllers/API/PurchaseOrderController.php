@@ -46,7 +46,7 @@ class PurchaseOrderController extends Controller
             return response(['bond'=>$bond,'error' => 'Alış tarix “Son tədavül tarixi”-dən cox ola bilməz.']);
         }
         $newPurchaseOrder = new PurchaseOrder([
-            'bonds_id'=>$bond->id,
+            'bond_id'=>$bond->id,
             'order_date' => $request->get('order_date'), //Y-m-d
             'number_bonds_received' => $request->get('number_bonds_received'),//digit
         ]);
