@@ -126,6 +126,7 @@ class BondController extends Controller
      */
     public function payouts($id){
         $bond = Bond::findOrFail($id);
+        $date=[];
         $emisia_date= $bond->emisia_date;//  'emisia_date' Emissiya tarixi,
         $turnover_date= $bond->turnover_date;//  'turnover_date' Son tədavül tarix,
         $nominal_price= (double) $bond->nominal_price;//  'nominal_price' Nominal Qiymət,
@@ -139,29 +140,43 @@ class BondController extends Controller
         // };
         switch ($period_for_calculating_interest) {
             case 360:
-              $interest_accrual_period_day = (12 / $frequency_payment_coupons) * 30;
+              $interest_accrual_period = (12 / $frequency_payment_coupons) * 30;
+              $month_or_day='day';
               break;
             case 364:
-              $interest_accrual_period_day = 364/ $frequency_payment_coupons;
+              $interest_accrual_period = 364/ $frequency_payment_coupons;
+              $month_or_day='day';
               break;
             case 365:
-              $interest_accrual_period_month = 12 / $frequency_payment_coupons;
+              $interest_accrual_period = 12 / $frequency_payment_coupons;
+              $month_or_day='month';
               break;
         }
         // $emisia_date_year =Carbon::createFromFormat('Y-m-d', $emisia_date)->year;
         // $turnover_date_year = Carbon::createFromFormat('Y-m-d', $turnover_date)->year;
         // $year_period=($turnover_date_year-$emisia_date_year+1)*$period_for_calculating_interest;
-        
+
         $emisia_date1 = new DateTime($emisia_date);
         $turnover_date1 = new DateTime($turnover_date);
         $interval = $emisia_date1->diff($turnover_date1);
-        $days = $interval->format('%a');
-        $interest_accrual_period=$interest_accrual_period_day??$interest_accrual_period_month;
-        for ($i = 1; $i <= $days; $i++) {
-          $date[]=['period_for_calculating_interest'=>$days,'date'=>date("Y-m-d", strtotime($emisia_date . "+".$i*$interest_accrual_period." day"))];
-        } 
-        return response(['bond'=>new BondResource($bond),'dates' => $date]);
-        // return response(['dates' =>$date]);
+        $totalDays = $interval->format('%a');
+        $yearsInMonths = $interval->format('%r%y') * 12;
+        $months = $interval->format('%r%m');
+        $totalMonths = $yearsInMonths + $months;
+        $countPeriod=($month_or_day=='day')?$totalDays:$totalMonths;
+//        $interest_accrual_period=$interest_accrual_period_day??$interest_accrual_period_month;
+        for ($i = $interest_accrual_period; $i <= $countPeriod+$interest_accrual_period; $i++) {
+            $percent_paid_date1=date("Y-m-d", strtotime($emisia_date . "+".$i." ".$month_or_day));
+            $intervalDate = new DateTime($percent_paid_date1);
+            $week_num = (int) $intervalDate->format("w");
+            $nextMonday=(($week_num==6)?2:0) + (($week_num==0)?1:0);
+            $percent_paid_date=($week_num==6 || $week_num==0)?date("Y-m-d", strtotime($percent_paid_date1 . "+".$nextMonday." day")):$percent_paid_date1;
+//            $date[]=['period_for_calculating_interest'=>$week_num ,'oldDate'=>$percent_paid_date1,'date'=>$percent_paid_date];
+            $date[]=['date'=>$percent_paid_date];
+            $i=$i+$interest_accrual_period;
+        }
+//        return response(['bond'=>new BondResource($bond),'dates' => $date]);
+         return response(['dates' =>$date]);
     }
 
 }
