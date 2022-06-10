@@ -1,4 +1,6 @@
 # bond-algoritma
+[![Actions Status](https://github.com/luisdalmolin/laravel-ci-test/workflows/CI/badge.svg)](https://github.com/RasimAghayev/bond-algoritma/actions)
+
 composer create-project laravel/laravel api
 
 touch database/database.sqlite
