@@ -4,7 +4,16 @@
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/1965733/Uz5NiDCK)
 
-
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=bugs)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=RasimAghayev_bond-algoritma&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=RasimAghayev_bond-algoritma)
 composer create-project laravel/laravel api
 
 touch database/database.sqlite
