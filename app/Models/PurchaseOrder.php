@@ -13,7 +13,7 @@ class PurchaseOrder extends Model
         'order_date', //Y-m-d
         'number_bonds_received',//digit
       ];
-    public function bonds(): BelongsTo
+    public function bond(): BelongsTo
     {
         return $this->belongsTo(Bond::class);
     }

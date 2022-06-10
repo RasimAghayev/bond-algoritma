@@ -15,7 +15,7 @@ class PurchaseOrderTest extends TestCase
      */
     public function test_example()
     {
-        $response = $this->get('/');
+        $response = $this->json('GET','api/purchaseprders');
 
         $response->assertStatus(200);
     }

@@ -13,23 +13,26 @@ class BondTest extends TestCase
      *
      * @return void
      */
-    public function test_example()
+    public function test_index_bonds()
     {
-        $response = $this->get('/');
+        $response = $this->json('GET','api/bonds');
 
         $response->assertStatus(200);
     }
     /**
-     * test create product.
+     * test create bond.
      *
      * @return void
      */
-    public function test_create_product()
+    public function test_create_bonds()
     {
         $response = $this->json('POST','api/bonds',[
-            'name' => 'Test product',
-            'sku' => 'test-sku',
-            'upc' => 'test-upc'
+            "emisia_date"=> "2021-11-08",
+            "turnover_date"=> "2022-11-03",
+            "nominal_price"=> 999,
+            "frequency_payment_coupons"=> "12",
+            "period_for_calculating_interest"=> "365",
+            "coupon_interest"=> 12
         ]);
 
         //Write the response in laravel.log

@@ -37,7 +37,7 @@ class PurchaseOrderFactory extends Factory
     {
         return $this->for(
             static::factoryForModel($this->purchaseorder()),
-            'bond',
+            'bonds',
         );
     }
 
