@@ -1,6 +1,10 @@
 # bond-algoritma
 [![Actions Status](https://github.com/luisdalmolin/laravel-ci-test/workflows/CI/badge.svg)](https://github.com/RasimAghayev/bond-algoritma/actions)
 
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/1965733/Uz5NiDCK)
+
+
 composer create-project laravel/laravel api
 
 touch database/database.sqlite
@@ -8,17 +12,21 @@ touch database/database.sqlite
 https://bond-algoritma.herokuapp.com/api/
 
 php artisan make:model Bond
+
 php artisan make:model PurchaseOrder
 
 php artisan make:migration create_comments_table
+
 php artisan make:migration create_purchase_order_table
 
 php artisan migrate
 
 php artisan make:seeder BondSeeder
+
 php artisan make:seeder PurchaseOrderSeeder
 
 php artisan make:factory BondFactory
+
 php artisan make:factory PurchaseOrderFactory
 
 php artisan db:seed
@@ -27,13 +35,16 @@ php artisan tinker -> App\Models\Bond::all() | App\Models\PurchaseOrder::all()
 
 
 php artisan make:controller API/BondController --resource
+
 php artisan make:controller API/PurchaseOrderController --resource
 
 php artisan make:resource BondResource
+
 php artisan make:resource PurchaseOrderResource
 
 
 php artisan make:test BondTest
+
 php artisan make:test PurchaseOrderTest
 
 
@@ -74,5 +85,3 @@ POST https://bond-algoritma.herokuapp.com/api/bond/3/order
   "number_bonds_received": 30
 }
 ```
-
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://documenter.getpostman.com/view/1965733/Uz5NiDCK)
