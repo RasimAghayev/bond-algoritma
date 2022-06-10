@@ -3,6 +3,9 @@ composer create-project laravel/laravel api
 
 touch database/database.sqlite
 
+https://protected-ocean-63405.herokuapp.com/ 
+| https://git.heroku.com/protected-ocean-63405.git
+
 php artisan make:model Bond
 php artisan make:model PurchaseOrder
 
