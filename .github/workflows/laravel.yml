@@ -15,7 +15,7 @@ jobs:
          options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: shivammathur/setup-php@81cd5ae0920b34eef300e1775313071038a53429
+      - uses: shivammathur/setup-php@73963f5001e335723c998e4a0125ce060083985c
         with:
           php-version: '8.1'
       - uses: actions/checkout@v1
