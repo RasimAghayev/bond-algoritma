@@ -1,4 +1,6 @@
 # bond-algoritma
+![Views](https://hits.sh/github.com/RasimAghayev/bond-algoritma.svg?label=views&color=0e75b6)
+
 [![Actions Status](https://github.com/luisdalmolin/laravel-ci-test/workflows/CI/badge.svg)](https://github.com/RasimAghayev/bond-algoritma/actions)
 
 
