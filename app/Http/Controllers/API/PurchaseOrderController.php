@@ -4,110 +4,51 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PurchaseOrderResource;
-use Illuminate\Http\Request;
-use App\Models\PurchaseOrder;
+use App\Modules\PurchaseOrder\Http\Requests\PurchaseOrderStoreRequest;
+use App\Modules\PurchaseOrder\Http\Requests\PurchaseOrderUpdateRequest;
 use App\Models\Bond;
+use App\Models\PurchaseOrder;
+use Illuminate\Http\Request;
 
 class PurchaseOrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $purchaseOrder = PurchaseOrder::all();
-//        return response()->json($purchaseOrder);
-        return response(['purchaseorderresources' => PurchaseOrderResource::collection($purchaseOrder)]);
+        $purchaseOrders = PurchaseOrder::with('bond')->get();
+        return response(['purchase_orders' => PurchaseOrderResource::collection($purchaseOrders)]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request,$id)
+    public function store(PurchaseOrderStoreRequest $request, int $id)
     {
-
-        $request->validate([
-            'order_date' => 'required|date_format:Y-m-d',
-            'number_bonds_received' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-        ]);
-        $order_date=$request->get('order_date');
+        $validated = $request->validated();
         $bond = Bond::findOrFail($id);
-        $emisia_date= $bond->emisia_date;
-        $turnover_date= $bond->turnover_date;
-        if($order_date<$emisia_date){
-            return response(['bond'=>$bond,'error' => 'Alış tarixi “Emissiya tarixi”-dən az ola bilməz.']);
+
+        if ($validated['order_date'] < $bond->emisia_date) {
+            return response(['bond' => $bond, 'error' => 'Alış tarixi “Emissiya tarixi”-dən az ola bilməz.']);
         }
-        if($turnover_date<$order_date){
-            return response(['bond'=>$bond,'error' => 'Alış tarix “Son tədavül tarixi”-dən cox ola bilməz.']);
+        if ($bond->turnover_date < $validated['order_date']) {
+            return response(['bond' => $bond, 'error' => 'Alış tarixi “Son tədavül tarixi”-dən çox ola bilməz.']);
         }
-        $newPurchaseOrder = new PurchaseOrder([
-            'bond_id'=>$bond->id,
-            'order_date' => $request->get('order_date'), //Y-m-d
-            'number_bonds_received' => $request->get('number_bonds_received'),//digit
-        ]);
 
-        $newPurchaseOrder->save();
-
-//        return response()->json($newPurchaseOrder);
-          return response(['purchaseorder' => new PurchaseOrderResource($newPurchaseOrder),
-              'message' => 'PurchaseOrder created successfully']);
+        $purchaseOrder = PurchaseOrder::create(array_merge($validated, ['bond_id' => $id]));
+        return response(['purchase_order' => new PurchaseOrderResource($purchaseOrder), 'message' => 'Purchase order created successfully']);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(PurchaseOrder $purchaseOrder)
     {
-        $purchaseOrder = PurchaseOrder::findOrFail($id);
-//        return response()->json($purchaseOrder);
-        return response(['purchaseorderresource' => PurchaseOrderResource::collection($purchaseOrder)]);
+        $purchaseOrder->load('bond');
+        return response(['purchase_order' => new PurchaseOrderResource($purchaseOrder)]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(PurchaseOrderUpdateRequest $request, PurchaseOrder $purchaseOrder)
     {
-
-        $purchaseOrder = PurchaseOrder::findOrFail($id);
-        $request->validate([
-            'order_date' => 'required|date_format:Y-m-d',
-            'number_bonds_received' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-        ]);
-
-        $purchaseOrder->order_date = $request->get('order_date');
-        $purchaseOrder->number_bonds_received = $request->get('number_bonds_received');
-
-        $purchaseOrder->save();
-
-//        return response()->json($purchaseOrder);
-        return response(['purchaseorderresource' => new PurchaseOrderResource($purchaseOrder),
-            'message' => 'PurchaseOrder updated successfully']);
+        $purchaseOrder->update($request->validated());
+        return response(['purchase_order' => new PurchaseOrderResource($purchaseOrder), 'message' => 'Purchase order updated successfully']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(PurchaseOrder $purchaseOrder)
     {
-        $bond = PurchaseOrder::findOrFail($id);
-        $bond->delete();
-//        return response()->json($bond::all());
-        return response(['purchaseorderresource' => $id, 'message' => 'PurchaseOrder deleted successfully']);
+        $purchaseOrder->delete();
+        return response(['purchase_order' => $purchaseOrder->id, 'message' => 'Purchase order deleted successfully']);
     }
 }
