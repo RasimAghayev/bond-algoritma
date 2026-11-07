@@ -1,6 +1,6 @@
-FROM php:8.2-cli-alpine AS base
+FROM php:8.5-cli-alpine AS base
 RUN apk add --no-cache bash git unzip libzip-dev oniguruma-dev \
- && docker-php-ext-install pdo pdo_mysql mbstring zip bcmath
+ && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip bcmath
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
@@ -18,3 +18,11 @@ RUN addgroup -S app && adduser -S app -G app && chown -R app:app /app
 USER app
 EXPOSE 8000
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+
+FROM base AS test
+RUN apk add --no-cache postgresql-client
+COPY --from=deps /app/vendor ./vendor
+COPY . .
+RUN composer install --no-interaction --no-scripts --optimize-autoloader
+RUN php artisan key:generate --ansi
+CMD ["sh", "-c", "php artisan migrate --force && vendor/bin/phpunit"]

@@ -1,53 +1,67 @@
-on: push
-name: LaravelCI
+name: Laravel CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
 jobs:
   laravel-tests-phpunit:
     runs-on: ubuntu-latest
     services:
-       postgres:
-         image: postgres:14.0
-         env:
-           POSTGRES_USER: postgres
-           POSTGRES_PASSWORD: postgres
-           POSTGRES_DB: test
-         ports:
-         - 5432:5432
-         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - uses: shivammathur/setup-php@81cd5ae0920b34eef300e1775313071038a53429
-        with:
-          php-version: '8.1'
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
+      - name: Checkout repository
+        uses: actions/checkout@v7
 
-      - name: Get Composer Cache Directory
+      - name: Get Composer cache directory
         id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v1
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v6
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
-      - name: Get yarn cache
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-      - uses: actions/cache@v1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: Directory Permissions
-        run: chmod -R 777 storage bootstrap/cache
-      - name: Prepare Laravel Application
+          php-version: '8.5'
+          extensions: pdo, pdo_pgsql, mbstring, zip, bcmath
+          ini-values: memory_limit=256M
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
+
+      - name: Directory permissions
+        run: |
+          mkdir -p storage bootstrap/cache
+          chmod -R 777 storage bootstrap/cache
+
+      - name: Prepare Laravel application
         run: |
           cp .env.ci .env
-          php artisan key:generate
-          vendor/bin/phpunit
+          php artisan key:generate --ansi
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Execute PHPUnit tests
+        run: vendor/bin/phpunit
