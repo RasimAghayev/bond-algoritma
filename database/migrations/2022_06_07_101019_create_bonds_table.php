@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('bonds', function (Blueprint $table) {
             $table->id();
-            $table->date('emisia_date')->format('Y-m-d');
-            $table->date('turnover_date')->format('Y-m-d'); //Y-m-d
+            $table->date('emisia_date');
+            $table->date('turnover_date');
             $table->double('nominal_price', 8, 2);
             $table->enum('frequency_payment_coupons', ['1', '2', '4', '12']);
             $table->enum('period_for_calculating_interest', ['360', '364', '365']);
