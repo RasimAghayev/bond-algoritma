@@ -19,7 +19,7 @@ class BondTermsTest extends TestCase
             360,
             10
         );
-        $this->assertSame(90, $terms->interestAccrualPeriod());
+        $this->assertSame(90.0, $terms->interestAccrualPeriod());
         $this->assertSame('day', $terms->accrualUnit());
     }
 
@@ -32,16 +32,16 @@ class BondTermsTest extends TestCase
             365,
             10
         );
-        $this->assertSame(3, $terms->interestAccrualPeriod());
+        $this->assertSame(3.0, $terms->interestAccrualPeriod());
         $this->assertSame('month', $terms->accrualUnit());
     }
 
     public function testMoneyOperations(): void
     {
         $money = new Money(100, 'AZN');
-        $this->assertSame(200, $money->multiply(2)->amount());
-        $this->assertSame(50, $money->divide(2)->amount());
-        $this->assertSame(150, $money->add(new Money(50))->amount());
+        $this->assertSame(200.0, $money->multiply(2)->amount());
+        $this->assertSame(50.0, $money->divide(2)->amount());
+        $this->assertSame(150.0, $money->add(new Money(50))->amount());
         $this->assertSame('AZN', $money->currency());
     }
 

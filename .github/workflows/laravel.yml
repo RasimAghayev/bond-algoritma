@@ -54,15 +54,4 @@ jobs:
         run: php artisan migrate --force --verbose
 
       - name: Execute PHPUnit tests
-        run: |
-          set +e
-          set -o pipefail
-          vendor/bin/phpunit --verbose 2>&1 | tee /tmp/phpunit.log
-          EXIT_CODE=${PIPESTATUS[0]}
-          if [ $EXIT_CODE -ne 0 ]; then
-            echo "PHPUnit failed with exit code $EXIT_CODE"
-            tail -50 /tmp/phpunit.log | while IFS= read -r line; do
-              echo "::error::$line"
-            done
-          fi
-          exit $EXIT_CODE
+        run: vendor/bin/phpunit --verbose
