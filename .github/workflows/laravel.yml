@@ -50,6 +50,13 @@ jobs:
           cp .env.ci .env
           php artisan key:generate --ansi
 
+      - name: Debug database config
+        run: |
+          echo "DB_CONNECTION=$(grep DB_CONNECTION .env)"
+          echo "DB_DATABASE=$(grep DB_DATABASE .env)"
+          ls -la /tmp/testing.sqlite 2>&1 || true
+          php -r "echo 'pdo_sqlite: '; echo extension_loaded('pdo_sqlite') ? 'yes' : 'no'; echo PHP_EOL;"
+
       - name: Run migrations
         run: php artisan migrate --force --verbose
 
