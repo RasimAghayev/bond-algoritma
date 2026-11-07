@@ -26,7 +26,20 @@ class BondApiTest extends TestCase
 
         $list = $this->getJson('/api/bonds');
         $list->assertStatus(200);
-        $list->assertJsonStructure(['bonds' => [*]]);
+        $list->assertJsonStructure(['bonds' => [
+            '*' => [
+                'id',
+                'emisia_date',
+                'turnover_date',
+                'nominal_price',
+                'frequency_payment_coupons',
+                'period_for_calculating_interest',
+                'coupon_interest',
+                'purchase_orders_count',
+                'created_at',
+                'updated_at',
+            ],
+        ]]);
     }
 
     public function testCanGetPayoutDates(): void
