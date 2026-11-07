@@ -61,4 +61,14 @@ jobs:
         run: php artisan migrate --force --verbose
 
       - name: Execute PHPUnit tests
-        run: vendor/bin/phpunit
+        run: |
+          set +e
+          vendor/bin/phpunit --verbose 2>&1 | tee /tmp/phpunit.log
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "PHPUnit failed with exit code $EXIT_CODE"
+            tail -30 /tmp/phpunit.log | while IFS= read -r line; do
+              echo "::error::$line"
+            done
+          fi
+          exit $EXIT_CODE
