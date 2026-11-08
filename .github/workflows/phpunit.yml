@@ -1,4 +1,4 @@
-name: PHPUnit Tests
+name: Pest Tests
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  phpunit:
+  pest:
     runs-on: ubuntu-latest
 
     steps:
@@ -51,7 +51,7 @@ jobs:
           php artisan key:generate --ansi
 
       - name: Run migrations
-        run: php artisan migrate --force --verbose
+        run: php artisan migrate --force
 
-      - name: Execute PHPUnit tests
-        run: vendor/bin/phpunit --verbose
+      - name: Execute Pest tests
+        run: vendor/bin/pest --colors=always
