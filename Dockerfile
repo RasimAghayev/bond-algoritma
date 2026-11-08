@@ -5,8 +5,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 
 FROM base AS deps
-COPY composer.json composer.lock* ./
-RUN if [ -f composer.lock ]; then composer install --no-dev --no-interaction --no-scripts --prefer-dist; else composer update --no-dev --no-interaction --no-scripts --prefer-dist; fi
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --no-scripts --prefer-dist
 
 FROM base AS build
 COPY --from=deps /app/vendor ./vendor
@@ -21,9 +21,19 @@ CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
 
 FROM base AS test
 USER root
-COPY composer.json composer.lock* ./
-RUN if [ -f composer.lock ]; then composer install --no-interaction --no-scripts --prefer-dist; else composer update --no-interaction --no-scripts --prefer-dist; fi
-COPY . .
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --no-scripts --prefer-dist
+COPY app ./app
+COPY bootstrap ./bootstrap
+COPY config ./config
+COPY database ./database
+COPY lang ./lang
+COPY public ./public
+COPY resources ./resources
+COPY routes ./routes
+COPY tests ./tests
+COPY artisan ./
+COPY phpunit.xml psalm.xml rector.php phpstan.neon ./
 RUN php artisan key:generate --ansi \
  && addgroup -S app && adduser -S app -G app \
  && chown -R app:app /app
