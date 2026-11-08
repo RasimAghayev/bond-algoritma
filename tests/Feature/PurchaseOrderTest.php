@@ -3,19 +3,15 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PurchaseOrderTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
+    use RefreshDatabase;
+
     public function test_example()
     {
-        $response = $this->json('GET','api/purchase_orders');
+        $response = $this->json('GET', 'api/purchase_orders');
 
         $response->assertStatus(200);
     }

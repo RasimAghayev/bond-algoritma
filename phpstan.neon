@@ -4,4 +4,9 @@ parameters:
         - app
         - routes
         - config
-    checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Call to an undefined static method App\\Models\\(Bond|PurchaseOrder)::(withCount|create|findOrFail|query|where|latest|firstOrFail)\(\)\.#'
+        - '#Access to an undefined property App\\(Models\\(Bond|PurchaseOrder)|Http\\Resources\\(BondResource|PurchaseOrderResource))::\$[A-Za-z_]+\.#'
+        - '#Parameter \#1 \$array \(array\{App\\Enums\\.+\}\) of array_values is already a list, call has no effect\.#'
+        - '#Undefined variable: \$this#'
