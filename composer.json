@@ -16,7 +16,7 @@
         "laravel/sail": "^1.25",
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^9.6.33",
-        "spatie/laravel-ignition": "^2.0"
+        "phpstan/phpstan": "^1.12"
     },
     "autoload": {
         "psr-4": {
