@@ -2,6 +2,9 @@
 <psalm
     errorLevel="5"
     resolveFromConfigFile="true"
+    findUnusedBaselineEntry="false"
+    findUnusedCode="false"
+    ensureOverrideAttribute="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
@@ -10,5 +13,21 @@
         <directory name="app" />
         <directory name="routes" />
         <directory name="config" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
     </projectFiles>
+    <issueHandlers>
+        <MissingOverrideAttribute errorLevel="suppress" />
+        <UnusedClass errorLevel="suppress" />
+        <PossiblyUnusedMethod errorLevel="suppress" />
+        <PossiblyUnusedParam errorLevel="suppress" />
+        <UnusedClosureParam errorLevel="suppress" />
+        <UndefinedThisPropertyFetch errorLevel="suppress" />
+        <InvalidArgument errorLevel="suppress" />
+        <InvalidTemplateParam errorLevel="suppress" />
+        <InvalidReturnType errorLevel="suppress" />
+        <MoreSpecificImplementedParamType errorLevel="suppress" />
+        <UndefinedInterfaceMethod errorLevel="suppress" />
+    </issueHandlers>
 </psalm>

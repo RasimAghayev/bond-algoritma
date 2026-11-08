@@ -4,4 +4,3 @@ parameters:
         - app
         - routes
         - config
-    checkMissingIterableValueType: false
