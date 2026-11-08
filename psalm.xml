@@ -1,10 +1,10 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <psalm
     errorLevel="5"
     resolveFromConfigFile="true"
-    xmlns="https://getpsalm.org/psalm/config/psalm.xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="https://getpsalm.org/psalm/config/psalm.xsd vendor/vimeo/psalm/psalm.xsd"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
     <projectFiles>
         <directory name="app" />
