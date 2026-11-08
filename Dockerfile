@@ -20,11 +20,12 @@ EXPOSE 8000
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
 
 FROM base AS test
+USER root
 COPY composer.json composer.lock* ./
 RUN if [ -f composer.lock ]; then composer install --no-interaction --no-scripts --prefer-dist; else composer update --no-interaction --no-scripts --prefer-dist; fi
 COPY . .
-RUN addgroup -S app && adduser -S app -G app \
- && php artisan key:generate --ansi \
+RUN php artisan key:generate --ansi \
+ && addgroup -S app && adduser -S app -G app \
  && chown -R app:app /app
 USER app
 CMD ["sh", "-c", "php artisan migrate --force && vendor/bin/pest"]
