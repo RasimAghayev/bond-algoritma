@@ -33,6 +33,7 @@ COPY resources ./resources
 COPY routes ./routes
 COPY tests ./tests
 COPY artisan ./
+COPY .env.ci .env
 COPY phpunit.xml psalm.xml rector.php phpstan.neon ./
 RUN php artisan key:generate --ansi \
  && addgroup -S app && adduser -S app -G app \
