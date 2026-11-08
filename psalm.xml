@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <psalm
-    errorBaseline="psalm-baseline.xml"
     errorLevel="5"
     resolveFromConfigFile="true"
     xmlns="https://getpsalm.org/psalm/config/psalm.xsd"
