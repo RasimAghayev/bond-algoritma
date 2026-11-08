@@ -15,7 +15,7 @@ class TaskTest extends TestCase
      */
     public function BondInterestMaturityDates()
     {
-        $response = $this->json('GET','api/bond/3/payouts');
+        $response = $this->json('GET','api/bonds/3/payouts');
 
         //Write the response in laravel.log
         \Log::info(1, [$response->getContent()]);
@@ -29,7 +29,7 @@ class TaskTest extends TestCase
      */
     public function CreatingaBondPurchaseOrder()
     {
-        $response = $this->json('POST','api/bond/3/order',[
+        $response = $this->json('POST','api/bonds/3/order',[
             "order_date"=> "2021-11-23",
             "number_bonds_received"=>  30
         ]);
@@ -46,7 +46,7 @@ class TaskTest extends TestCase
      */
     public function InterestPaymentsontheBondOrder()
     {
-        $response = $this->json('POST','api/bond/order/3');
+        $response = $this->json('GET','api/bond/order/3');
 
         //Write the response in laravel.log
         \Log::info(1, [$response->getContent()]);
