@@ -17,9 +17,4 @@ docker-compose*.yml
 Dockerfile
 README*.md
 docs
-tests
-phpunit.xml
-psalm.xml
-phpstan.neon
-rector.php
-sonar-project.properties
+sonar-project-properties
