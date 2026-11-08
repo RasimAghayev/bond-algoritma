@@ -1,0 +1,53 @@
+name: PHPUnit Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: pdo, pdo_sqlite, mbstring, zip, bcmath
+          ini-values: memory_limit=256M
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
+
+      - name: Directory permissions
+        run: |
+          mkdir -p storage bootstrap/cache
+          chmod -R 777 storage bootstrap/cache
+
+      - name: Prepare Laravel application
+        run: |
+          cp .env.ci .env
+          php artisan key:generate --ansi
+
+      - name: Run migrations
+        run: php artisan migrate --force --verbose
+
+      - name: Execute PHPUnit tests
+        run: vendor/bin/phpunit --verbose

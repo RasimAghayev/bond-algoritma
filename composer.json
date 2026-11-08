@@ -16,7 +16,9 @@
         "laravel/sail": "^1.25",
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^9.6.33",
-        "phpstan/phpstan": "^1.12"
+        "phpstan/phpstan": "^1.12",
+        "rector/rector": "^1.1",
+        "vimeo/psalm": "^5.4"
     },
     "autoload": {
         "psr-4": {

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<psalm
+    errorBaseline="psalm-baseline.xml"
+    errorLevel="5"
+    resolveFromConfigFile="true"
+    xmlns="https://getpsalm.org/psalm/config/psalm.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://getpsalm.org/psalm/config/psalm.xsd vendor/vimeo/psalm/psalm.xsd"
+>
+    <projectFiles>
+        <directory name="app" />
+        <directory name="routes" />
+        <directory name="config" />
+    </projectFiles>
+</psalm>
