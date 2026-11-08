@@ -36,7 +36,7 @@ class BondTest extends TestCase
         ]);
 
         //Write the response in laravel.log
-        \Log::info(1, [$response->getContent()]);
+        \Log::info('Bond create response: ' . $response->getContent());
 
         $response->assertStatus(200);
     }

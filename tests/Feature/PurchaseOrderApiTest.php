@@ -50,7 +50,7 @@ class PurchaseOrderApiTest extends TestCase
             'number_bonds_received' => '30.00',
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(422);
         $response->assertJsonFragment(['error' => 'Alış tarixi “Emissiya tarixi”-dən az ola bilməz.']);
     }
 

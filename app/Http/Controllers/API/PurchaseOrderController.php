@@ -8,6 +8,7 @@ use App\Modules\PurchaseOrder\Http\Requests\PurchaseOrderStoreRequest;
 use App\Modules\PurchaseOrder\Http\Requests\PurchaseOrderUpdateRequest;
 use App\Models\Bond;
 use App\Models\PurchaseOrder;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PurchaseOrderController extends Controller
@@ -23,15 +24,28 @@ class PurchaseOrderController extends Controller
         $validated = $request->validated();
         $bond = Bond::findOrFail($id);
 
-        if ($validated['order_date'] < $bond->emisia_date) {
-            return response(['bond' => $bond, 'error' => 'Alış tarixi “Emissiya tarixi”-dən az ola bilməz.']);
+        $orderDate = Carbon::parse($validated['order_date']);
+        $emissionDate = Carbon::parse($bond->emisia_date);
+        $turnoverDate = Carbon::parse($bond->turnover_date);
+
+        if ($orderDate->lt($emissionDate)) {
+            return response()->json([
+                'bond' => $bond,
+                'error' => 'Alış tarixi “Emissiya tarixi”-dən az ola bilməz.',
+            ], 422);
         }
-        if ($bond->turnover_date < $validated['order_date']) {
-            return response(['bond' => $bond, 'error' => 'Alış tarixi “Son tədavül tarixi”-dən çox ola bilməz.']);
+        if ($turnoverDate->lt($orderDate)) {
+            return response()->json([
+                'bond' => $bond,
+                'error' => 'Alış tarixi “Son tədavül tarixi”-dən çox ola bilməz.',
+            ], 422);
         }
 
         $purchaseOrder = PurchaseOrder::create(array_merge($validated, ['bond_id' => $id]));
-        return response(['purchase_order' => new PurchaseOrderResource($purchaseOrder), 'message' => 'Purchase order created successfully']);
+        return response()->json([
+            'purchase_order' => new PurchaseOrderResource($purchaseOrder),
+            'message' => 'Purchase order created successfully',
+        ]);
     }
 
     public function show(PurchaseOrder $purchaseOrder)
