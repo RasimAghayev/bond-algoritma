@@ -1,4 +1,4 @@
-FROM php:8.5-cli-alpine AS base
+FROM php:8.6-cli-alpine AS base
 RUN apk add --no-cache bash git unzip libzip-dev oniguruma-dev postgresql-dev \
  && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip bcmath
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
